@@ -17,6 +17,53 @@ class MemoryTimeline {
     }
 
     async init() {
+        // Enforce login first
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            this.setupLogin();
+        } else {
+            document.getElementById('login-overlay').style.display = 'none';
+            this.startApp();
+        }
+    }
+
+    setupLogin() {
+        const loginOverlay = document.getElementById('login-overlay');
+        const passwordInput = document.getElementById('password-input');
+        const loginBtn = document.getElementById('login-btn');
+        const errorMsg = document.getElementById('error-msg');
+
+        // Hide loader initially to show login
+        this.loader.style.display = 'none';
+
+        const checkPassword = () => {
+            if (passwordInput.value === 'daju13/09') {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                loginOverlay.style.opacity = 0;
+                setTimeout(() => {
+                    loginOverlay.style.display = 'none';
+                    this.loader.style.display = 'flex'; // Show loader for fetch
+                    this.startApp();
+                }, 500);
+            } else {
+                errorMsg.style.display = 'block';
+                passwordInput.style.borderColor = 'red';
+                // fast shake effect
+                passwordInput.animate([
+                    { transform: 'translateX(0)' },
+                    { transform: 'translateX(5px)' },
+                    { transform: 'translateX(-5px)' },
+                    { transform: 'translateX(0)' }
+                ], { duration: 200, iterations: 2 });
+            }
+        };
+
+        loginBtn.addEventListener('click', checkPassword);
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+    }
+
+    async startApp() {
         try {
             await this.loadMemories();
             this.renderSlides();
