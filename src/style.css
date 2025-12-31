@@ -1,0 +1,165 @@
+:root {
+    --bg-color: #0a0a0a;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a0a0a0;
+    --accent: #d4af37; /* Gold touch */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden; /* Prevent scrolling, we handle it custom */
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Loader */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease;
+}
+
+.title-loading {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    letter-spacing: 2px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* Slider Container */
+.slider-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* We will translate this container for sliding */
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.slide {
+    min-width: 100vw; /* Full width per slide */
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6; /* Dim functionality */
+    transform: scale(1.1); /* Slight zoom for parallax */
+    transition: transform 1.5s ease-out, opacity 1s ease;
+}
+
+/* Active slide effects */
+.slide.active .slide-bg {
+    transform: scale(1); /* Reset scale slowly */
+    opacity: 1;
+}
+
+.slide-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 2rem;
+    max-width: 800px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+}
+
+.slide.active .slide-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.date-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.caption {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-style: italic;
+    line-height: 1.2;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+/* UI Layer */
+.ui-layer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    margin-bottom: 1rem;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--text-primary);
+    width: 0%;
+    transition: width 0.3s linear;
+}
+
+.navigation-hint {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.6;
+}
+
+/* Video specific */
+video.slide-bg {
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .caption {
+        font-size: 2rem;
+    }
+}
