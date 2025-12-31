@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,28 @@
     <!-- Google Fonts for that premium feel -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
 
     <div id="loader">
         <div class="loader-content">
             <h1 class="title-loading">Cargando recuerdos...</h1>
+        </div>
+    </div>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>Nuestra Historia</h2>
+            <p>Introduce la fecha especial</p>
+            <input type="password" id="password-input" placeholder="clave...">
+            <button id="login-btn">Entrar ❤️</button>
+            <p id="error-msg" style="color: red; display: none; margin-top: 10px; font-size: 0.8rem;">Clave incorrecta
+            </p>
         </div>
     </div>
 
@@ -31,4 +47,5 @@
 
     <script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
