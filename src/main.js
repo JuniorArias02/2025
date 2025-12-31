@@ -46,16 +46,13 @@ class MemoryTimeline {
         this.slider.innerHTML = this.memories.map((memory, index) => {
             const date = memory.date ? new Date(memory.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long' }) : '';
 
-            let mediaElement;
-            if (memory.type === 'video') {
-                mediaElement = `<video class="slide-bg" src="${memory.path}" loop muted playsinline autoplay></video>`;
-            } else {
-                mediaElement = `<img class="slide-bg" src="${memory.path}" alt="Memory">`;
-            }
-
+            // Lazy load setup: use data-src instead of src
             return `
                 <div class="slide" data-index="${index}">
-                    ${mediaElement}
+                    ${memory.type === 'video'
+                    ? `<video class="slide-bg lazy" data-src="${memory.path}" loop muted playsinline></video>`
+                    : `<img class="slide-bg lazy" data-src="${memory.path}" alt="Memory">`
+                }
                     <div class="slide-content">
                         ${date ? `<div class="date-label">${date}</div>` : ''}
                         <h2 class="caption">${memory.caption || getRomanticPlaceholder(index)}</h2>
@@ -112,7 +109,41 @@ class MemoryTimeline {
         // Add .active class to current slide for CSS animations
         document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
         const activeSlide = document.querySelector(`.slide[data-index="${index}"]`);
-        if (activeSlide) activeSlide.classList.add('active');
+
+        if (activeSlide) {
+            activeSlide.classList.add('active');
+            // Play video if active and loaded
+            const video = activeSlide.querySelector('video');
+            if (video && video.src) video.play().catch(e => console.log("Autoplay blocked", e));
+        }
+
+        // --- LAZY LOAD LOGIC ---
+        // Load Current, Previous, and Next
+        const total = this.memories.length;
+        const indicesToLoad = [
+            index,
+            (index - 1 + total) % total,
+            (index + 1) % total
+        ];
+
+        indicesToLoad.forEach(i => {
+            const slide = document.querySelector(`.slide[data-index="${i}"]`);
+            if (!slide) return;
+            const media = slide.querySelector('.lazy');
+            if (media && !media.src) {
+                if (media.dataset.src) {
+                    media.src = media.dataset.src;
+                    media.classList.remove('lazy');
+                    // Preload video if next
+                    if (media.tagName === 'VIDEO') media.load();
+                }
+            }
+        });
+
+        // Pause other videos for performance
+        document.querySelectorAll('video').forEach(vid => {
+            if (vid !== activeSlide?.querySelector('video')) vid.pause();
+        });
     }
 
     updateProgress(index) {
